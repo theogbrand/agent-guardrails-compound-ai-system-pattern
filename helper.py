@@ -43,15 +43,45 @@ def get_game_state(inventory={}):
     kingdom = world['kingdoms']['Valtoria']
     town = kingdom['towns']["Brindlemark"]
     character = town['npcs']['Kaelin Darkhaven']
+
+    system_prompt = """You are an AI Game master. Your job is to create a 
+    start to an adventure based on the world, kingdom, town and character 
+    a player is playing as. 
+    Instructions:
+    You must only use 2-4 sentences \
+    Write in second person. For example: "You are Jack" \
+    Write in present tense. For example "You stand at..." \
+    First describe the character and their backstory. \
+    Then describes where they start and what they see around them."""
+
+    world_info = f"""
+    World: {world}
+    Kingdom: {kingdom}
+    Town: {town}
+    Your Character: {character}
+    """
+
+    client = Groq(api_key=get_groq_api_key())
+    model_output = client.chat.completions.create(
+        model="llama-3.2-90b-vision-preview",
+        temperature=0.0,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": world_info + "\nYour Start:"},
+        ],
+    )
+    start = model_output.choices[0].message.content
+    print(start)
+    world["start"] = start
     # start = world['start']
     
     game_state = {
-        "world": world['description'],
-        "kingdom": kingdom['description'],
-        "town": town['description'],
-        "character": character['description'],
-        # "start": start,
-        "inventory": inventory
+        "world": world["description"],
+        "kingdom": kingdom["description"],
+        "town": town["description"],
+        "character": character["description"],
+        "start": start,
+        "inventory": inventory,
     }
     print("game_state loaded from json: ", game_state)
     return game_state
@@ -81,6 +111,7 @@ Your Character:  {game_state['character']}"""
     ]
 
     for action in history:
+        print("appending action: ", action)
         messages.append({"role": "assistant", "content": action[0]})
         messages.append({"role": "user", "content": action[1]})
            
