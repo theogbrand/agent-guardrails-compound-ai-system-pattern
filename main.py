@@ -94,7 +94,8 @@ blood_pressure_reading: {patient_state["blood_pressure_reading"]}
         {"role": "user", "content": patient_state_info},
     ]
 
-    # added by state change detector above so we can update the patient state later
+    # a little strange but we are kind of "grouping" a patient's message to the AI as a message AND a state update,
+    # then this run_action main agnet manages how to reply to the patient based on the previous instructions
     for action in history:
         messages.append({"role": "assistant", "content": action[0]})
         messages.append({"role": "user", "content": action[1]})
