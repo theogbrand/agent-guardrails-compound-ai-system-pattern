@@ -53,6 +53,7 @@ def get_game_state(inventory={}):
         # "start": start,
         "inventory": inventory
     }
+    print("game_state loaded from json: ", game_state)
     return game_state
 
 def run_action(message, history, game_state):
