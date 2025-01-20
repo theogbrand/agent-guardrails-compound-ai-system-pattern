@@ -102,38 +102,52 @@ blood_pressure_reading: {patient_state["blood_pressure_reading"]}
 
     messages.append({"role": "user", "content": message})
     model_output = client.chat.completions.create(
-        model="llama-3.3-70b-versatile", messages=messages
+        model="llama-3.2-90b-vision-preview", messages=messages
     )
 
     result = model_output.choices[0].message.content
     return result
 
+def update_patient_state(patient_state, state_updates):
+    update_msg = ""
+    if not state_updates:
+        return update_msg, patient_state
+    for update in state_updates:
+        patient_state[update["patient_state_key"]] = update["patient_state_value"]
+        update_msg += f"{update['patient_state_key']} updated to {update['patient_state_value']}\n"
+    return update_msg, patient_state
+
 
 def main_loop(message, history):
     # change to fetch from DB
-    patient_state = {
+    initial_patient_state = {
         "blood_pressure_taken": False,
         "blood_pressure_reading": 120,
     }
-    output = run_action(message, history, patient_state)
+    output = run_action(message, history, initial_patient_state)
 
     # safe = is_safe(output)
     # if not safe:
     #     return 'Invalid Output'
 
-    state_updates = detect_state_changes(patient_state, output)
-    return "Patient State Updated with: " + str(state_updates)
+    state_updates = detect_state_changes(initial_patient_state, output)
+    # return "Patient State Updated with: " + str(state_updates)
+
+    update_msg, final_patient_state = update_patient_state(
+        initial_patient_state, state_updates
+    )
 
     # update_msg = update_inventory(
     #     game_state['inventory'],
     #     item_updates
     # )
-    # output += update_msg
+    output += update_msg
 
-    # return output
+    return output
 
 
 def start_chat(main_loop, share=False):
+    # set variables for initial patient state here and pass it to main_loop
     demo = gr.ChatInterface(
         main_loop,
         chatbot=gr.Chatbot(height=250, placeholder="Type 'start chat' to begin"),
