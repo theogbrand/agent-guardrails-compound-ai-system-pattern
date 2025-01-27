@@ -119,14 +119,14 @@ def update_patient_state(patient_state, state_updates):
 
 
 def main_loop(message, history):
-    # change to fetch from DB
+    # TODO: from collecting BP (1 step) to going through checklist (N steps)
     initial_patient_state = {
         "blood_pressure_taken": False,
         "blood_pressure_reading": None,
     }
     output = run_action(message, history, initial_patient_state)
 
-    # Input Guard here
+    # TODO: Input Guard here
     # stage 1 guard: guard checks after complete LLM output (batch guard), API/DIY
     # stage 2 guard: guard checks after each LLM output token (streaming guard)
     # stage 3 guard: multiple parallel guards check after each LLM output token (batch guard)
@@ -138,15 +138,18 @@ def main_loop(message, history):
     state_updates = detect_state_changes(initial_patient_state, output)
     # return "Patient State Updated with: " + str(state_updates)
 
+    # TODO: after intent detection, transfer to specialist agent to execute workflow (think SWARM-type multi-agent framework)
+    # TODO: some message-passing framework to pass state and messages to specialist agent, while constantly pruned (garbage collect assistant chat history to avoid confusion)
     update_msg, final_patient_state = update_patient_state(
         initial_patient_state, state_updates
     )
 
-    # Output Guard here
+    # TODO: Output Guard here
     # safe = is_safe(update_msg)
     # if not safe:
     #     return 'Invalid Output' # fail message should pass to global LLM state or some LLM fallback for cycle to recover
 
+    # TODO: update state or checklist
     # update_msg = update_inventory(
     #     game_state['inventory'],
     #     item_updates
