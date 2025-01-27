@@ -120,13 +120,14 @@ def update_patient_state(patient_state, state_updates):
 
 def main_loop(message, history):
     # TODO: from collecting BP (1 step) to going through checklist (N steps)
+    # Next TODO: Master Magenta One inner and outer loop with handover
     initial_patient_state = {
         "blood_pressure_taken": False,
         "blood_pressure_reading": None,
     }
     output = run_action(message, history, initial_patient_state)
 
-    # TODO: Input Guard here
+    # TODO: Input Guard here, with callback for failing guard (Action, string message)
     # stage 1 guard: guard checks after complete LLM output (batch guard), API/DIY
     # stage 2 guard: guard checks after each LLM output token (streaming guard)
     # stage 3 guard: multiple parallel guards check after each LLM output token (batch guard)
