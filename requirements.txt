@@ -2,3 +2,12 @@ python-dotenv~=1.0.1
 pydantic==2.8.2
 gradio==4.44.1
 groq
+openai
+guardrails-ai
+transformers
+bs4
+numpy
+matplotlib
+presidio_analyzer
+presidio_anonymizer
+sentence_transformers
