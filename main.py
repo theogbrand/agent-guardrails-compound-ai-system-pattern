@@ -122,10 +122,15 @@ def main_loop(message, history):
     # change to fetch from DB
     initial_patient_state = {
         "blood_pressure_taken": False,
-        "blood_pressure_reading": 120,
+        "blood_pressure_reading": None,
     }
     output = run_action(message, history, initial_patient_state)
 
+    # Input Guard here
+    # stage 1 guard: guard checks after complete LLM output (batch guard), API/DIY
+    # stage 2 guard: guard checks after each LLM output token (streaming guard)
+    # stage 3 guard: multiple parallel guards check after each LLM output token (batch guard)
+    # stage 4 guard: multiple parallel guard checks after each LLM output token (streaming guard)
     # safe = is_safe(output)
     # if not safe:
     #     return 'Invalid Output'
@@ -136,6 +141,11 @@ def main_loop(message, history):
     update_msg, final_patient_state = update_patient_state(
         initial_patient_state, state_updates
     )
+
+    # Output Guard here
+    # safe = is_safe(update_msg)
+    # if not safe:
+    #     return 'Invalid Output' # fail message should pass to global LLM state or some LLM fallback for cycle to recover
 
     # update_msg = update_inventory(
     #     game_state['inventory'],
