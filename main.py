@@ -145,7 +145,7 @@ def main_loop(message, history):
         initial_patient_state, state_updates
     )
 
-    # TODO: Output Guard here
+    # TODO: Output Guard here, **check model does not say anything offtopic, mention PII, mention other sensitive topics, only shows empathy and asks to take BP, otherwise return reask specialist agent with feedback [seems like this makes the most difference according to Hippo]
     # safe = is_safe(update_msg)
     # if not safe:
     #     return 'Invalid Output' # fail message should pass to global LLM state or some LLM fallback for cycle to recover
