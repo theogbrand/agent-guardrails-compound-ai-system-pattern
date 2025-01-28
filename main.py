@@ -125,6 +125,7 @@ def main_loop(message, history):
         "blood_pressure_taken": False,
         "blood_pressure_reading": None,
     }
+    # TODO: Add MedPrompt+ here where each specialist agent goes through MedPrompt+ pipeline (scratchpad/not, dynamic few shot, randomised ensembling with majority vote)
     output = run_action(message, history, initial_patient_state)
 
     # TODO: Input Guard here, with callback for failing guard (Action, string message)
